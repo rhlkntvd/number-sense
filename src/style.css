@@ -10,3 +10,7 @@ body {
   margin: 0;
   font-family: sans-serif;
 }
+
+.subtitle {
+  text-align: center;
+}
