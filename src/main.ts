@@ -1,5 +1,6 @@
 import './style.css'
 import { parseConfiguration } from './configuration'
+import { generateProblem } from './problem'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 
@@ -311,8 +312,9 @@ configurationForm.addEventListener('submit', (event) => {
 
   try {
     const configuration = parseConfiguration(formData)
-
+    const problem = generateProblem(configuration)
     console.log(configuration)
+    console.log(problem)
   } catch (error) {
     console.error(error)
   }

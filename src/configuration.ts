@@ -45,11 +45,24 @@ function getInteger(formData: FormData, name: string): number {
 
   const number = Number(value)
 
-  if (!Number.isInteger(number)) {
-    throw new Error(`${name} must be an integer`)
+  if (!Number.isSafeInteger(number)) {
+    throw new Error(`${name} must be a safe integer`)
   }
 
   return number
+}
+
+function getPositiveInteger(
+  formData: FormData,
+  name: string,
+): number {
+  const value = getInteger(formData, name)
+
+  if (value <= 0) {
+    throw new Error(`${name} must be greater than zero`)
+  }
+
+  return value
 }
 
 function getRange(
@@ -131,12 +144,12 @@ export function parseConfiguration(formData: FormData): Configuration {
   if (mode === 'count') {
     drillMode = {
       type: 'count',
-      count: getInteger(formData, 'count'),
+      count: getPositiveInteger(formData, 'count'),
     }
   } else if (mode === 'duration') {
     drillMode = {
       type: 'duration',
-      duration: getInteger(formData, 'duration'),
+      duration: getPositiveInteger(formData, 'duration')
     }
   } else {
     throw new Error('invalid drill mode')
