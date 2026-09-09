@@ -1,11 +1,15 @@
-import './style.css'
-import { parseConfiguration } from './configuration'
-import { generateProblem } from './problem'
+// imports
+import "./style.css";
 
-const app = document.querySelector<HTMLDivElement>('#app')
+import { parseConfiguration, type Configuration } from "./configuration";
+
+import { generateProblem, type Problem } from "./problem";
+
+// initial markup
+const app = document.querySelector<HTMLDivElement>("#app");
 
 if (!app) {
-  throw new Error('app element not found')
+  throw new Error("app element not found");
 }
 
 app.innerHTML = `
@@ -196,72 +200,76 @@ app.innerHTML = `
           </select>
       </fieldset>
 
+      <p id="configuration-error" role="alert"></p>
+
       <button type="submit">Start</button>
 
     </form>
-  </main>
-`
 
-const configurationForm =
-  document.querySelector<HTMLFormElement>('#configuration-form')
+    <section id="drill" class="drill" hidden>
+    <p>
+      Score:
+      <span id="score">0</span>
+    </p>
+
+    <p id="problem"></p>
+
+    <label for="answer-input">Answer</label>
+    <input
+      id="answer-input"
+      type="number"
+      step="1"
+      autocomplete="off"
+    />
+    </section>
+  </main>
+`;
+
+// configuration DOM
+const configurationForm = document.querySelector<HTMLFormElement>(
+  "#configuration-form",
+);
 
 if (!configurationForm) {
-  throw new Error('configuration form not found')
+  throw new Error("configuration form not found");
 }
 
-const countRadio =
-  configurationForm.querySelector<HTMLInputElement>(
-    'input[name="drill-mode"][value="count"]'
-  )
+const countRadio = configurationForm.querySelector<HTMLInputElement>(
+  'input[name="drill-mode"][value="count"]',
+);
 
-const durationRadio =
-  configurationForm.querySelector<HTMLInputElement>(
-    'input[name="drill-mode"][value="duration"]'
-  )
+const durationRadio = configurationForm.querySelector<HTMLInputElement>(
+  'input[name="drill-mode"][value="duration"]',
+);
 
-const countSelect =
-  configurationForm.querySelector<HTMLSelectElement>(
-    'select[name="count"]'
-  )
+const countSelect = configurationForm.querySelector<HTMLSelectElement>(
+  'select[name="count"]',
+);
 
-const durationSelect =
-  configurationForm.querySelector<HTMLSelectElement>(
-    'select[name="duration"]'
-  )
+const durationSelect = configurationForm.querySelector<HTMLSelectElement>(
+  'select[name="duration"]',
+);
 
 if (!countRadio || !durationRadio || !countSelect || !durationSelect) {
-  throw new Error('drill mode controls not found')
+  throw new Error("drill mode controls not found");
 }
 
-const updateDrillModeControls = () => {
-  countSelect.disabled = !countRadio.checked
-  durationSelect.disabled = !durationRadio.checked
-}
+const additionCheckbox = configurationForm.querySelector<HTMLInputElement>(
+  'input[name="addition"]',
+);
 
-countRadio.addEventListener('change', updateDrillModeControls)
-durationRadio.addEventListener('change', updateDrillModeControls)
-
-updateDrillModeControls()
-
-const additionCheckbox =
-  configurationForm.querySelector<HTMLInputElement>(
-    'input[name="addition"]'
-  )
-
-const subtractionCheckbox =
-  configurationForm.querySelector<HTMLInputElement>(
-    'input[name="subtraction"]'
-  )
+const subtractionCheckbox = configurationForm.querySelector<HTMLInputElement>(
+  'input[name="subtraction"]',
+);
 
 const multiplicationCheckbox =
   configurationForm.querySelector<HTMLInputElement>(
-    'input[name="multiplication"]'
-  )
+    'input[name="multiplication"]',
+  );
 
-const divisionCheckbox =
-  configurationForm.querySelector<HTMLInputElement>(
-    'input[name="division"]'
-  )
+const divisionCheckbox = configurationForm.querySelector<HTMLInputElement>(
+  'input[name="division"]',
+);
 
 if (
   !additionCheckbox ||
@@ -269,53 +277,183 @@ if (
   !multiplicationCheckbox ||
   !divisionCheckbox
 ) {
-  throw new Error('operation controls not found')
+  throw new Error("operation controls not found");
 }
 
 const additiveRangeInputs =
   configurationForm.querySelectorAll<HTMLInputElement>(
-    'input[name^="additive-"]'
-  )
+    'input[name^="additive-"]',
+  );
 
 const multiplicativeRangeInputs =
   configurationForm.querySelectorAll<HTMLInputElement>(
-    'input[name^="multiplicative-"]'
-  )
+    'input[name^="multiplicative-"]',
+  );
+
+// drill DOM
+const drillSection = document.querySelector<HTMLElement>("#drill");
+
+const problemDisplay = document.querySelector<HTMLParagraphElement>("#problem");
+
+const scoreDisplay = document.querySelector<HTMLSpanElement>("#score");
+
+const answerInput = document.querySelector<HTMLInputElement>("#answer-input");
+
+const configurationError = document.querySelector<HTMLParagraphElement>(
+  "#configuration-error",
+);
+
+if (
+  !drillSection ||
+  !problemDisplay ||
+  !scoreDisplay ||
+  !answerInput ||
+  !configurationError
+) {
+  throw new Error("drill controls not found");
+}
+
+// state variables
+let currentConfiguration: Configuration | null = null;
+let currentProblem: Problem | null = null;
+let score = 0;
+
+// UI helpers
+const updateDrillModeControls = () => {
+  countSelect.disabled = !countRadio.checked;
+  durationSelect.disabled = !durationRadio.checked;
+};
 
 const updateOperationControls = () => {
   const additiveEnabled =
-    additionCheckbox.checked || subtractionCheckbox.checked
+    additionCheckbox.checked || subtractionCheckbox.checked;
 
   const multiplicativeEnabled =
-    multiplicationCheckbox.checked || divisionCheckbox.checked
+    multiplicationCheckbox.checked || divisionCheckbox.checked;
 
   additiveRangeInputs.forEach((input) => {
-    input.disabled = !additiveEnabled
-  })
+    input.disabled = !additiveEnabled;
+  });
 
   multiplicativeRangeInputs.forEach((input) => {
-    input.disabled = !multiplicativeEnabled
-  })
-}
+    input.disabled = !multiplicativeEnabled;
+  });
+};
 
-additionCheckbox.addEventListener('change', updateOperationControls)
-subtractionCheckbox.addEventListener('change', updateOperationControls)
-multiplicationCheckbox.addEventListener('change', updateOperationControls)
-divisionCheckbox.addEventListener('change', updateOperationControls)
+const getOperationSymbol = (operation: Problem["operation"]): string => {
+  switch (operation) {
+    case "addition":
+      return "+";
 
-updateOperationControls()
+    case "subtraction":
+      return "-";
 
-configurationForm.addEventListener('submit', (event) => {
-  event.preventDefault()
+    case "multiplication":
+      return "x";
 
-  const formData = new FormData(configurationForm)
+    case "division":
+      return "÷";
+  }
+};
+
+const displayProblem = (problem: Problem) => {
+  const symbol = getOperationSymbol(problem.operation);
+  problemDisplay.textContent = `${problem.left} ${symbol} ${problem.right} =`;
+};
+
+// game actions
+const startDrill = (configuration: Configuration): boolean => {
+  const problem = generateProblem(configuration);
+
+  if (!problem) {
+    return false;
+  }
+
+  currentConfiguration = configuration;
+  currentProblem = problem;
+  score = 0;
+
+  scoreDisplay.textContent = "0";
+  answerInput.value = "";
+
+  configurationForm.hidden = true;
+  drillSection.hidden = false;
+
+  displayProblem(problem);
+
+  answerInput.focus();
+
+  return true;
+};
+
+// event listeners
+countRadio.addEventListener("change", updateDrillModeControls);
+durationRadio.addEventListener("change", updateDrillModeControls);
+
+additionCheckbox.addEventListener("change", updateOperationControls);
+subtractionCheckbox.addEventListener("change", updateOperationControls);
+multiplicationCheckbox.addEventListener("change", updateOperationControls);
+divisionCheckbox.addEventListener("change", updateOperationControls);
+
+configurationForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  configurationError.textContent = "";
+
+  const formData = new FormData(configurationForm);
 
   try {
-    const configuration = parseConfiguration(formData)
-    const problem = generateProblem(configuration)
-    console.log(configuration)
-    console.log(problem)
+    const configuration = parseConfiguration(formData);
+
+    const started = startDrill(configuration);
+
+    if (!started) {
+      configurationError.textContent =
+        "no valid problems can be generated from this configuration.";
+    }
   } catch (error) {
-    console.error(error)
+    configurationError.textContent =
+      error instanceof Error ? error.message : "Unable to start drill.";
   }
-})
+});
+
+answerInput.addEventListener("input", () => {
+  if (!currentProblem || !currentConfiguration) {
+    return;
+  }
+
+  const value = answerInput.value.trim();
+
+  if (value === "") {
+    return;
+  }
+
+  const answer = Number(value);
+
+  if (!Number.isSafeInteger(answer)) {
+    return;
+  }
+
+  if (answer !== currentProblem.answer) {
+    return;
+  }
+
+  score += 1;
+  scoreDisplay.textContent = String(score);
+
+  const nextProblem = generateProblem(currentConfiguration);
+
+  if (!nextProblem) {
+    return;
+  }
+
+  currentProblem = nextProblem;
+
+  answerInput.value = "";
+
+  displayProblem(nextProblem);
+});
+
+// initialization
+updateOperationControls();
+updateDrillModeControls();
