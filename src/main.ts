@@ -1,9 +1,7 @@
 // imports
 import "./style.css";
-
-import { parseConfiguration, type Configuration } from "./configuration";
-
-import { generateProblem, type Problem } from "./problem";
+import { parseConfiguration } from "./configuration";
+import { createDrill } from "./drill";
 
 // initial markup
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -327,13 +325,14 @@ if (
   throw new Error("drill controls not found");
 }
 
-// state variables
-let currentConfiguration: Configuration | null = null;
-let currentProblem: Problem | null = null;
-let drillStartTime: number | null = null;
-let drillEndTime: number | null = null;
-let timerId: number | null = null;
-let score = 0;
+const drill = createDrill({
+  section: drillSection,
+  problemDisplay,
+  scoreDisplay,
+  timeDisplay,
+  statusDisplay: drillStatus,
+  answerInput,
+});
 
 // UI helpers
 const updateDrillModeControls = () => {
@@ -357,153 +356,6 @@ const updateOperationControls = () => {
   });
 };
 
-const formatTime = (milliseconds: number, precision: number): string => {
-  return (milliseconds / 1000).toFixed(precision);
-};
-
-const updateElapsedTime = () => {
-  if (drillStartTime === null) {
-    return;
-  }
-
-  const elapsed = performance.now() - drillStartTime;
-
-  timeDisplay.textContent = formatTime(elapsed, 1);
-};
-
-const updateRemainingTime = () => {
-  if (drillEndTime === null) {
-    return;
-  }
-
-  const remaining = Math.max(0, drillEndTime - performance.now());
-
-  timeDisplay.textContent = formatTime(remaining, 1);
-
-  if (remaining <= 0) {
-    finishDrill();
-  }
-};
-
-const getOperationSymbol = (operation: Problem["operation"]): string => {
-  switch (operation) {
-    case "addition":
-      return "+";
-
-    case "subtraction":
-      return "-";
-
-    case "multiplication":
-      return "x";
-
-    case "division":
-      return "÷";
-  }
-};
-
-const displayProblem = (problem: Problem) => {
-  const symbol = getOperationSymbol(problem.operation);
-  problemDisplay.textContent = `${problem.left} ${symbol} ${problem.right} =`;
-};
-
-const formatQuestionCount = (count: number): string => {
-  return `${count} ${count === 1 ? "question" : "questions"}`;
-};
-
-// game actions
-const startCountTimer = () => {
-  drillStartTime = performance.now();
-  drillEndTime = null;
-
-  updateElapsedTime();
-
-  timerId = window.setInterval(updateElapsedTime, 100);
-};
-
-const startDurationTimer = (durationSeconds: number) => {
-  drillStartTime = performance.now();
-
-  drillEndTime = drillStartTime + durationSeconds * 1000;
-
-  updateRemainingTime();
-
-  timerId = window.setInterval(updateRemainingTime, 100);
-};
-
-const stopTimer = () => {
-  if (timerId !== null) {
-    window.clearInterval(timerId);
-    timerId = null;
-  }
-};
-
-const startDrill = (configuration: Configuration): boolean => {
-  const problem = generateProblem(configuration);
-
-  if (!problem) {
-    return false;
-  }
-
-  stopTimer();
-
-  currentConfiguration = configuration;
-  currentProblem = problem;
-  score = 0;
-
-  scoreDisplay.textContent = "0";
-  timeDisplay.textContent = "0.0";
-  drillStatus.textContent = "";
-
-  answerInput.value = "";
-  answerInput.disabled = false;
-
-  configurationForm.hidden = true;
-  drillSection.hidden = false;
-
-  displayProblem(problem);
-
-  if (configuration.drillMode.type === "count") {
-    startCountTimer();
-  } else {
-    startDurationTimer(configuration.drillMode.duration);
-  }
-
-  answerInput.focus();
-
-  return true;
-};
-
-const finishDrill = () => {
-  if (!currentConfiguration) {
-    return;
-  }
-
-  stopTimer();
-
-  answerInput.disabled = true;
-  problemDisplay.textContent = "";
-
-  if (currentConfiguration.drillMode.type === "count") {
-    const elapsed =
-      drillStartTime === null ? 0 : performance.now() - drillStartTime;
-
-    const formattedTime = formatTime(elapsed, 2);
-
-    timeDisplay.textContent = formattedTime;
-
-    drillStatus.textContent = `${formatQuestionCount(score)} completed in ${formattedTime} seconds`;
-  } else {
-    timeDisplay.textContent = "0.0";
-
-    drillStatus.textContent = `${formatQuestionCount(score)} completed in ${currentConfiguration.drillMode.duration} seconds`;
-  }
-
-  currentProblem = null;
-  currentConfiguration = null;
-  drillStartTime = null;
-  drillEndTime = null;
-};
-
 // event listeners
 countRadio.addEventListener("change", updateDrillModeControls);
 durationRadio.addEventListener("change", updateDrillModeControls);
@@ -523,70 +375,20 @@ configurationForm.addEventListener("submit", (event) => {
   try {
     const configuration = parseConfiguration(formData);
 
-    const started = startDrill(configuration);
+    const started = drill.start(configuration);
 
     if (!started) {
       configurationError.textContent =
-        "no valid problems can be generated from this configuration.";
+        "no valid problems can be generated from this configuration";
+
+      return;
     }
+
+    configurationForm.hidden = true;
   } catch (error) {
     configurationError.textContent =
-      error instanceof Error ? error.message : "Unable to start drill.";
+      error instanceof Error ? error.message : "unable to start drill";
   }
-});
-
-answerInput.addEventListener("input", () => {
-  if (!currentProblem || !currentConfiguration) {
-    return;
-  }
-
-  if (
-    currentConfiguration.drillMode.type === "duration" &&
-    drillEndTime !== null &&
-    performance.now() >= drillEndTime
-  ) {
-    finishDrill();
-    return;
-  }
-
-  const value = answerInput.value.trim();
-
-  if (value === "") {
-    return;
-  }
-
-  const answer = Number(value);
-
-  if (!Number.isSafeInteger(answer)) {
-    return;
-  }
-
-  if (answer !== currentProblem.answer) {
-    return;
-  }
-
-  score += 1;
-  scoreDisplay.textContent = String(score);
-
-  if (
-    currentConfiguration.drillMode.type === "count" &&
-    score >= currentConfiguration.drillMode.count
-  ) {
-    finishDrill();
-    return;
-  }
-
-  const nextProblem = generateProblem(currentConfiguration);
-
-  if (!nextProblem) {
-    return;
-  }
-
-  currentProblem = nextProblem;
-
-  answerInput.value = "";
-
-  displayProblem(nextProblem);
 });
 
 // initialization
