@@ -8,7 +8,10 @@ type DrillElements = {
   scoreDisplay: HTMLSpanElement;
   timeDisplay: HTMLSpanElement;
   statusDisplay: HTMLParagraphElement;
+  answerLabel: HTMLLabelElement;
   answerInput: HTMLInputElement;
+  actions: HTMLDivElement;
+  replayButton: HTMLButtonElement;
 };
 
 export function createDrill(elements: DrillElements) {
@@ -44,6 +47,18 @@ export function createDrill(elements: DrillElements) {
     }
   };
 
+  const updateScoreDisplay = () => {
+    if (!currentConfiguration) {
+      return;
+    }
+
+    if (currentConfiguration.drillMode.type === "count") {
+      elements.scoreDisplay.textContent = `${score}/${currentConfiguration.drillMode.count}`;
+    } else {
+      elements.scoreDisplay.textContent = String(score);
+    }
+  };
+
   const displayProblem = (problem: Problem) => {
     const symbol = getOperationSymbol(problem.operation);
 
@@ -64,8 +79,14 @@ export function createDrill(elements: DrillElements) {
 
     stopTimer();
 
+    elements.answerLabel.hidden = true;
+    elements.answerInput.value = "";
     elements.answerInput.disabled = true;
+    elements.answerInput.hidden = true;
+
     elements.problemDisplay.textContent = "";
+
+    elements.actions.hidden = false;
 
     if (currentConfiguration.drillMode.type === "count") {
       const elapsed =
@@ -83,7 +104,6 @@ export function createDrill(elements: DrillElements) {
     }
 
     currentProblem = null;
-    currentConfiguration = null;
     drillStartTime = null;
     drillEndTime = null;
   };
@@ -144,13 +164,17 @@ export function createDrill(elements: DrillElements) {
     currentProblem = problem;
     score = 0;
 
-    elements.scoreDisplay.textContent = "0";
+    updateScoreDisplay();
     elements.statusDisplay.textContent = "";
 
+    elements.answerLabel.hidden = false;
     elements.answerInput.value = "";
     elements.answerInput.disabled = false;
+    elements.answerInput.hidden = false;
 
     elements.section.hidden = false;
+
+    elements.actions.hidden = true;
 
     displayProblem(problem);
 
@@ -171,6 +195,16 @@ export function createDrill(elements: DrillElements) {
 
     return true;
   };
+
+  const replay = () => {
+    if (!currentConfiguration) {
+      return;
+    }
+
+    start(currentConfiguration);
+  };
+
+  elements.replayButton.addEventListener("click", replay);
 
   elements.answerInput.addEventListener("input", () => {
     if (!currentProblem || !currentConfiguration) {
@@ -204,7 +238,7 @@ export function createDrill(elements: DrillElements) {
 
     score += 1;
 
-    elements.scoreDisplay.textContent = String(score);
+    updateScoreDisplay();
 
     if (
       currentConfiguration.drillMode.type === "count" &&

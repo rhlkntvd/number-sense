@@ -219,13 +219,23 @@ app.innerHTML = `
 
     <p id="problem"></p>
 
-    <label for="answer-input">Answer</label>
+    <label id="answer-label" for="answer-input">Answer:</label>
     <input
       id="answer-input"
       type="number"
       step="1"
       autocomplete="off"
     />
+
+    <div id="drill-actions" hidden>
+    <button type="button" id="replay-button">
+      Play Again
+    </button>
+
+    <button type="button" id="settings-button">
+      Change Settings
+    </button>
+    </div>
     </section>
   </main>
 `;
@@ -307,11 +317,21 @@ const timeDisplay = document.querySelector<HTMLSpanElement>("#time");
 const drillStatus =
   document.querySelector<HTMLParagraphElement>("#drill-status");
 
+const answerLabel = document.querySelector<HTMLLabelElement>("#answer-label");
+
 const answerInput = document.querySelector<HTMLInputElement>("#answer-input");
 
 const configurationError = document.querySelector<HTMLParagraphElement>(
   "#configuration-error",
 );
+
+const drillActions = document.querySelector<HTMLDivElement>("#drill-actions");
+
+const replayButton =
+  document.querySelector<HTMLButtonElement>("#replay-button");
+
+const settingsButton =
+  document.querySelector<HTMLButtonElement>("#settings-button");
 
 if (
   !drillSection ||
@@ -319,8 +339,12 @@ if (
   !scoreDisplay ||
   !timeDisplay ||
   !drillStatus ||
+  !answerLabel ||
   !answerInput ||
-  !configurationError
+  !configurationError ||
+  !drillActions ||
+  !replayButton ||
+  !settingsButton
 ) {
   throw new Error("drill controls not found");
 }
@@ -331,7 +355,10 @@ const drill = createDrill({
   scoreDisplay,
   timeDisplay,
   statusDisplay: drillStatus,
+  answerLabel,
   answerInput,
+  actions: drillActions,
+  replayButton,
 });
 
 // UI helpers
@@ -364,6 +391,12 @@ additionCheckbox.addEventListener("change", updateOperationControls);
 subtractionCheckbox.addEventListener("change", updateOperationControls);
 multiplicationCheckbox.addEventListener("change", updateOperationControls);
 divisionCheckbox.addEventListener("change", updateOperationControls);
+
+settingsButton.addEventListener("click", () => {
+  drillSection.hidden = true;
+  drillActions.hidden = true;
+  configurationForm.hidden = false;
+});
 
 configurationForm.addEventListener("submit", (event) => {
   event.preventDefault();
