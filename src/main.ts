@@ -202,6 +202,9 @@ app.innerHTML = `
 
       <button type="submit">Start</button>
 
+      <button type="button" id="reset-settings-button">
+        Reset to Defaults
+      </button>
     </form>
 
     <section id="drill" class="drill" hidden>
@@ -293,6 +296,14 @@ if (
   !divisionCheckbox
 ) {
   throw new Error("operation controls not found");
+}
+
+const resetSettingsButton = configurationForm.querySelector<HTMLButtonElement>(
+  "#reset-settings-button",
+);
+
+if (!resetSettingsButton) {
+  throw new Error("reset settings button not found");
 }
 
 const additiveRangeInputs =
@@ -391,6 +402,15 @@ additionCheckbox.addEventListener("change", updateOperationControls);
 subtractionCheckbox.addEventListener("change", updateOperationControls);
 multiplicationCheckbox.addEventListener("change", updateOperationControls);
 divisionCheckbox.addEventListener("change", updateOperationControls);
+
+resetSettingsButton.addEventListener("click", () => {
+  configurationForm.reset();
+
+  updateOperationControls();
+  updateDrillModeControls();
+
+  configurationError.textContent = "";
+});
 
 settingsButton.addEventListener("click", () => {
   drillSection.hidden = true;
