@@ -2,6 +2,8 @@ import type { Configuration } from "./configuration";
 
 import { generateProblem, type Problem } from "./problem";
 
+const TIMER_UPDATE_INTERVAL = 100;
+
 type DrillElements = {
   section: HTMLElement;
   problemDisplay: HTMLParagraphElement;
@@ -40,7 +42,7 @@ export function createDrill(elements: DrillElements) {
         return "-";
 
       case "multiplication":
-        return "×";
+        return "x";
 
       case "division":
         return "÷";
@@ -72,6 +74,13 @@ export function createDrill(elements: DrillElements) {
     }
   };
 
+  const resetAnswerControls = (enabled: boolean) => {
+    elements.answerLabel.hidden = !enabled;
+    elements.answerInput.hidden = !enabled;
+    elements.answerInput.disabled = !enabled;
+    elements.answerInput.value = "";
+  };
+
   const finishDrill = () => {
     if (!currentConfiguration) {
       return;
@@ -79,10 +88,7 @@ export function createDrill(elements: DrillElements) {
 
     stopTimer();
 
-    elements.answerLabel.hidden = true;
-    elements.answerInput.value = "";
-    elements.answerInput.disabled = true;
-    elements.answerInput.hidden = true;
+    resetAnswerControls(false);
 
     elements.problemDisplay.textContent = "";
 
@@ -124,7 +130,7 @@ export function createDrill(elements: DrillElements) {
 
     updateElapsedTime();
 
-    timerId = window.setInterval(updateElapsedTime, 100);
+    timerId = window.setInterval(updateElapsedTime, TIMER_UPDATE_INTERVAL);
   };
 
   const updateRemainingTime = () => {
@@ -148,7 +154,7 @@ export function createDrill(elements: DrillElements) {
 
     updateRemainingTime();
 
-    timerId = window.setInterval(updateRemainingTime, 100);
+    timerId = window.setInterval(updateRemainingTime, TIMER_UPDATE_INTERVAL);
   };
 
   const start = (configuration: Configuration): boolean => {
@@ -167,10 +173,7 @@ export function createDrill(elements: DrillElements) {
     updateScoreDisplay();
     elements.statusDisplay.textContent = "";
 
-    elements.answerLabel.hidden = false;
-    elements.answerInput.value = "";
-    elements.answerInput.disabled = false;
-    elements.answerInput.hidden = false;
+    resetAnswerControls(true);
 
     elements.section.hidden = false;
 

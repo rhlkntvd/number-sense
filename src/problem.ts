@@ -2,187 +2,135 @@ import type {
   AdditiveConfig,
   Configuration,
   MultiplicativeConfig,
-} from './configuration'
+} from "./configuration";
 
 // private types
-type ProblemGenerator = () => Problem | null
+type ProblemGenerator = () => Problem | null;
 
-type Operation =
-  | 'addition'
-  | 'subtraction'
-  | 'multiplication'
-  | 'division'
+type Operation = "addition" | "subtraction" | "multiplication" | "division";
 
 // exported types
 export type Problem = {
-  left: number
-  right: number
-  operation: Operation
-  answer: number
-}
+  left: number;
+  right: number;
+  operation: Operation;
+  answer: number;
+};
 
 // private helpers
 function randomInteger(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function canGenerateDivision(
-  config: MultiplicativeConfig,
-): boolean {
-  return config.left.max > 0 || config.right.max > 0
+function canGenerateDivision(config: MultiplicativeConfig): boolean {
+  return config.left.max > 0 || config.right.max > 0;
 }
 
 function randomItem<T>(items: T[]): T {
-  const index = randomInteger(0, items.length - 1)
-  return items[index]
+  const index = randomInteger(0, items.length - 1);
+  return items[index];
 }
 
 // private problem generators
-function generateAdditionProblem(
-  config: AdditiveConfig,
-): Problem {
-  const left = randomInteger(
-    config.left.min,
-    config.left.max,
-  )
+function generateAdditionProblem(config: AdditiveConfig): Problem {
+  const left = randomInteger(config.left.min, config.left.max);
 
-  const right = randomInteger(
-    config.right.min,
-    config.right.max,
-  )
+  const right = randomInteger(config.right.min, config.right.max);
 
   return {
     left,
     right,
-    operation: 'addition',
+    operation: "addition",
     answer: left + right,
-  }
+  };
 }
 
-function generateSubtractionProblem(
-  config: AdditiveConfig,
-): Problem {
-  const firstAddend = randomInteger(
-    config.left.min,
-    config.left.max,
-  )
+function generateSubtractionProblem(config: AdditiveConfig): Problem {
+  const firstAddend = randomInteger(config.left.min, config.left.max);
 
-  const secondAddend = randomInteger(
-    config.right.min,
-    config.right.max,
-  )
+  const secondAddend = randomInteger(config.right.min, config.right.max);
 
   return {
     left: firstAddend + secondAddend,
     right: firstAddend,
-    operation: 'subtraction',
+    operation: "subtraction",
     answer: secondAddend,
-  }
+  };
 }
 
-function generateMultiplicationProblem(
-  config: MultiplicativeConfig,
-): Problem {
-  const left = randomInteger(
-    config.left.min,
-    config.left.max,
-  )
+function generateMultiplicationProblem(config: MultiplicativeConfig): Problem {
+  const left = randomInteger(config.left.min, config.left.max);
 
-  const right = randomInteger(
-    config.right.min,
-    config.right.max,
-  )
+  const right = randomInteger(config.right.min, config.right.max);
 
   return {
     left,
     right,
-    operation: 'multiplication',
+    operation: "multiplication",
     answer: left * right,
-  }
+  };
 }
 
-export function generateDivisionProblem(
-  config: MultiplicativeConfig,
-): Problem | null {
+function generateDivisionProblem(config: MultiplicativeConfig): Problem | null {
   if (!canGenerateDivision(config)) {
-    return null
+    return null;
   }
 
-  let firstFactor: number
-  let secondFactor: number
+  let firstFactor: number;
+  let secondFactor: number;
 
   do {
-    firstFactor = randomInteger(
-      config.left.min,
-      config.left.max,
-    )
+    firstFactor = randomInteger(config.left.min, config.left.max);
 
-    secondFactor = randomInteger(
-      config.right.min,
-      config.right.max,
-    )
-  } while (firstFactor === 0 && secondFactor === 0)
+    secondFactor = randomInteger(config.right.min, config.right.max);
+  } while (firstFactor === 0 && secondFactor === 0);
 
-  const product = firstFactor * secondFactor
+  const product = firstFactor * secondFactor;
 
   if (firstFactor !== 0) {
     return {
       left: product,
       right: firstFactor,
-      operation: 'division',
+      operation: "division",
       answer: secondFactor,
-    }
+    };
   }
 
   return {
     left: product,
     right: secondFactor,
-    operation: 'division',
+    operation: "division",
     answer: firstFactor,
-  }
+  };
 }
 
 // exported problem generator
-export function generateProblem(
-  configuration: Configuration,
-): Problem | null {
-  const generators: ProblemGenerator[] = []
+export function generateProblem(configuration: Configuration): Problem | null {
+  const generators: ProblemGenerator[] = [];
 
-  const additive = configuration.operations.additive
+  const additive = configuration.operations.additive;
 
   if (additive?.addition) {
-    generators.push(() =>
-      generateAdditionProblem(additive)
-    )
+    generators.push(() => generateAdditionProblem(additive));
   }
 
   if (additive?.subtraction) {
-    generators.push(() =>
-      generateSubtractionProblem(additive)
-    )
+    generators.push(() => generateSubtractionProblem(additive));
   }
 
-  const multiplicative =
-    configuration.operations.multiplicative
+  const multiplicative = configuration.operations.multiplicative;
 
   if (multiplicative?.multiplication) {
-    generators.push(() =>
-      generateMultiplicationProblem(multiplicative)
-    )
+    generators.push(() => generateMultiplicationProblem(multiplicative));
   }
 
-  if (
-    multiplicative?.division &&
-    canGenerateDivision(multiplicative)
-  ) {
-    generators.push(() =>
-      generateDivisionProblem(multiplicative)
-    )
+  if (multiplicative?.division && canGenerateDivision(multiplicative)) {
+    generators.push(() => generateDivisionProblem(multiplicative));
   }
 
   if (generators.length === 0) {
-    return null
+    return null;
   }
 
-  return randomItem(generators)()
+  return randomItem(generators)();
 }
