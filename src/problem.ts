@@ -2,6 +2,7 @@ import type {
   AdditiveConfig,
   Configuration,
   MultiplicativeConfig,
+  Range,
 } from "./configuration";
 
 // private types
@@ -22,8 +23,12 @@ function randomInteger(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function canGenerateNonZero(range: Range): boolean {
+  return range.min < 0 || range.max > 0;
+}
+
 function canGenerateDivision(config: MultiplicativeConfig): boolean {
-  return config.left.max > 0 || config.right.max > 0;
+  return canGenerateNonZero(config.left) || canGenerateNonZero(config.right);
 }
 
 function randomItem<T>(items: T[]): T {

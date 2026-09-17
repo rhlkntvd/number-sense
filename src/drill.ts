@@ -33,6 +33,10 @@ export function createDrill(elements: DrillElements) {
     return `${count} ${count === 1 ? "problem" : "problems"}`;
   };
 
+  const formatRightOperand = (value: number): string => {
+    return value < 0 ? `(${value})` : String(value);
+  };
+
   const getOperationSymbol = (operation: Problem["operation"]): string => {
     switch (operation) {
       case "addition":
@@ -64,7 +68,9 @@ export function createDrill(elements: DrillElements) {
   const displayProblem = (problem: Problem) => {
     const symbol = getOperationSymbol(problem.operation);
 
-    elements.problemDisplay.textContent = `${problem.left} ${symbol} ${problem.right} =`;
+    const right = formatRightOperand(problem.right);
+
+    elements.problemDisplay.textContent = `${problem.left} ${symbol} ${right} =`;
   };
 
   const stopTimer = () => {
