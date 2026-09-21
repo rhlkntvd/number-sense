@@ -14,6 +14,7 @@ type DrillElements = {
   answerInput: HTMLInputElement;
   actions: HTMLDivElement;
   replayButton: HTMLButtonElement;
+  problemRow: HTMLDivElement;
 };
 
 export function createDrill(elements: DrillElements) {
@@ -46,7 +47,7 @@ export function createDrill(elements: DrillElements) {
         return "-";
 
       case "multiplication":
-        return "x";
+        return "×";
 
       case "division":
         return "÷";
@@ -99,6 +100,10 @@ export function createDrill(elements: DrillElements) {
     elements.problemDisplay.textContent = "";
 
     elements.actions.hidden = false;
+
+    elements.replayButton.focus();
+
+    elements.problemRow.hidden = true;
 
     if (currentConfiguration.drillMode.type === "count") {
       const elapsed =
@@ -184,6 +189,8 @@ export function createDrill(elements: DrillElements) {
     elements.section.hidden = false;
 
     elements.actions.hidden = true;
+
+    elements.problemRow.hidden = false;
 
     displayProblem(problem);
 

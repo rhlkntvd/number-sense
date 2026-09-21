@@ -104,6 +104,14 @@ const replayButton =
 const settingsButton =
   document.querySelector<HTMLButtonElement>("#settings-button");
 
+const problemRow = document.querySelector<HTMLDivElement>("#problem-row");
+
+const siteFooter = document.querySelector<HTMLElement>("#site-footer");
+
+if (!siteFooter) {
+  throw new Error("site footer not found");
+}
+
 if (
   !drillSection ||
   !problemDisplay ||
@@ -115,13 +123,15 @@ if (
   !configurationError ||
   !drillActions ||
   !replayButton ||
-  !settingsButton
+  !settingsButton ||
+  !problemRow
 ) {
   throw new Error("drill controls not found");
 }
 
 const drill = createDrill({
   section: drillSection,
+  problemRow,
   problemDisplay,
   scoreDisplay,
   timeDisplay,
@@ -176,6 +186,8 @@ settingsButton.addEventListener("click", () => {
   drillSection.hidden = true;
   drillActions.hidden = true;
   configurationForm.hidden = false;
+  siteFooter.hidden = false;
+  additionCheckbox.focus();
 });
 
 configurationForm.addEventListener("submit", (event) => {
@@ -198,6 +210,7 @@ configurationForm.addEventListener("submit", (event) => {
     }
 
     configurationForm.hidden = true;
+    siteFooter.hidden = true;
   } catch (error) {
     configurationError.textContent =
       error instanceof Error ? error.message : "unable to start drill";

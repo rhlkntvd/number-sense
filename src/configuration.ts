@@ -1,3 +1,6 @@
+const MAX_ADDITIVE_OPERAND = 9_999;
+const MAX_MULTIPLICATIVE_FACTOR = 999;
+
 export type Range = {
   min: number;
   max: number;
@@ -96,6 +99,14 @@ function validateMultiplicativeResults(left: Range, right: Range): void {
   }
 }
 
+function validateRangeMagnitude(range: Range, maximum: number, label: string) {
+  if (Math.abs(range.min) > maximum || Math.abs(range.max) > maximum) {
+    throw new Error(
+      `${label} values must be between ${-maximum} and ${maximum}.`,
+    );
+  }
+}
+
 export function parseConfiguration(formData: FormData): Configuration {
   const addition = formData.has("addition");
   const subtraction = formData.has("subtraction");
@@ -118,6 +129,8 @@ export function parseConfiguration(formData: FormData): Configuration {
     );
 
     validateAdditiveResults(left, right);
+    validateRangeMagnitude(left, MAX_ADDITIVE_OPERAND, "additive range");
+    validateRangeMagnitude(right, MAX_ADDITIVE_OPERAND, "additive range");
 
     operations.additive = {
       addition,
@@ -141,6 +154,17 @@ export function parseConfiguration(formData: FormData): Configuration {
     );
 
     validateMultiplicativeResults(left, right);
+    validateRangeMagnitude(
+      left,
+      MAX_MULTIPLICATIVE_FACTOR,
+      "multiplicative range",
+    );
+
+    validateRangeMagnitude(
+      right,
+      MAX_MULTIPLICATIVE_FACTOR,
+      "multiplicative range",
+    );
 
     operations.multiplicative = {
       multiplication,

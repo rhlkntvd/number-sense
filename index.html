@@ -2,214 +2,311 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="A configurable arithmetic drill game for practicing number sense."
+    />
+
     <title>Number Sense</title>
   </head>
+
   <body>
-    <div id="app"></div>
-    <main>
-      <h1>Number Sense</h1>
-      <p class="subtitle">an arithmetic game</p>
+    <div id="app">
+      <main>
+        <header class="site-header">
+          <h1>Number Sense</h1>
+          <p class="subtitle">an arithmetic game</p>
+        </header>
 
-      <form id="configuration-form">
-        <fieldset>
-          <legend>Operations</legend>
+        <form id="configuration-form">
+          <div class="configuration-intro">
+            <ul>
+              <li>
+                configure the operations, ranges, and mode you want to practice
+              </li>
 
-          <fieldset>
-            <legend>(+/-)</legend>
+              <li>type each answer as quickly and accurately as you can</li>
+            </ul>
+          </div>
 
-            <label>
-              <input type="checkbox" name="addition" checked />
-              Addition
-            </label>
+          <fieldset class="operations-fieldset">
+            <legend>Operations</legend>
 
-            <label>
-              <input type="checkbox" name="subtraction" checked />
-              Subtraction
-            </label>
+            <div class="operation-group">
+              <div class="operation-options">
+                <label>
+                  <input type="checkbox" name="addition" checked />
+                  Addition
+                </label>
 
-            <p>Shared Ranges</p>
+                <label>
+                  <input type="checkbox" name="subtraction" checked />
+                  Subtraction
+                </label>
+              </div>
 
-            <div>
-              <span>(</span>
+              <div class="range-row">
+                <div class="range-part">
+                  <span>(</span>
 
-              <input
-                type="number"
-                name="additive-left-min"
-                value="2"
-                step="1"
-                required
-                aria-label="additive first number minimum"
-              />
+                  <input
+                    type="number"
+                    name="additive-left-min"
+                    value="2"
+                    min="-9999"
+                    max="9999"
+                    step="1"
+                    required
+                    aria-label="additive first number minimum"
+                  />
 
-              <span>to</span>
+                  <span>to</span>
 
-              <input
-                type="number"
-                name="additive-left-max"
-                value="100"
-                step="1"
-                required
-                aria-label="additive first number maximum"
-              />
+                  <input
+                    type="number"
+                    name="additive-left-max"
+                    value="100"
+                    min="-9999"
+                    max="9999"
+                    step="1"
+                    required
+                    aria-label="additive first number maximum"
+                  />
 
-              <span>) + (</span>
+                  <span>)</span>
+                </div>
 
-              <input
-                type="number"
-                name="additive-right-min"
-                value="2"
-                step="1"
-                required
-                aria-label="additive second number minimum"
-              />
+                <span class="range-operator">+</span>
 
-              <span>to</span>
+                <div class="range-part">
+                  <span>(</span>
 
-              <input
-                type="number"
-                name="additive-right-max"
-                value="100"
-                step="1"
-                required
-                aria-label="additive second number maximum"
-              />
+                  <input
+                    type="number"
+                    name="additive-right-min"
+                    value="2"
+                    min="-9999"
+                    max="9999"
+                    step="1"
+                    required
+                    aria-label="additive second number minimum"
+                  />
 
-              <span>)</span>
+                  <span>to</span>
+
+                  <input
+                    type="number"
+                    name="additive-right-max"
+                    value="100"
+                    min="-9999"
+                    max="9999"
+                    step="1"
+                    required
+                    aria-label="additive second number maximum"
+                  />
+
+                  <span>)</span>
+                </div>
+              </div>
+
+              <p class="range-note">
+                subtraction reverses problems generated from these ranges
+              </p>
             </div>
-            <p>Subtraction reverses problems generated from these ranges.</p>
+
+            <div class="operation-group">
+              <div class="operation-options">
+                <label>
+                  <input type="checkbox" name="multiplication" checked />
+                  Multiplication
+                </label>
+
+                <label>
+                  <input type="checkbox" name="division" checked />
+                  Division
+                </label>
+              </div>
+
+              <div class="range-row">
+                <div class="range-part">
+                  <span>(</span>
+
+                  <input
+                    type="number"
+                    name="multiplicative-left-min"
+                    value="2"
+                    min="-999"
+                    max="999"
+                    step="1"
+                    required
+                    aria-label="multiplicative first number minimum"
+                  />
+
+                  <span>to</span>
+
+                  <input
+                    type="number"
+                    name="multiplicative-left-max"
+                    value="12"
+                    min="-999"
+                    max="999"
+                    step="1"
+                    required
+                    aria-label="multiplicative first number maximum"
+                  />
+
+                  <span>)</span>
+                </div>
+
+                <span class="range-operator">×</span>
+
+                <div class="range-part">
+                  <span>(</span>
+
+                  <input
+                    type="number"
+                    name="multiplicative-right-min"
+                    value="2"
+                    min="-999"
+                    max="999"
+                    step="1"
+                    required
+                    aria-label="multiplicative second number minimum"
+                  />
+
+                  <span>to</span>
+
+                  <input
+                    type="number"
+                    name="multiplicative-right-max"
+                    value="100"
+                    min="-999"
+                    max="999"
+                    step="1"
+                    required
+                    aria-label="multiplicative second number maximum"
+                  />
+
+                  <span>)</span>
+                </div>
+              </div>
+
+              <p class="range-note">
+                division reverses problems generated from these ranges
+              </p>
+            </div>
           </fieldset>
 
-          <fieldset>
-            <legend>(x/÷)</legend>
+          <fieldset class="drill-mode-fieldset">
+            <legend>Drill Mode</legend>
 
-            <label>
-              <input type="checkbox" name="multiplication" checked />
-              Multiplication
-            </label>
+            <div class="drill-mode-options">
+              <div class="drill-mode-option">
+                <label>
+                  <input type="radio" name="drill-mode" value="count" checked />
+                  Count
+                </label>
 
-            <label>
-              <input type="checkbox" name="division" checked />
-              Division
-            </label>
+                <select name="count" aria-label="problem count">
+                  <option value="10">10 problems</option>
+                  <option value="25" selected>25 problems</option>
+                  <option value="50">50 problems</option>
+                  <option value="75">75 problems</option>
+                  <option value="100">100 problems</option>
+                </select>
+              </div>
 
-            <p>Shared Ranges</p>
+              <div class="drill-mode-option">
+                <label>
+                  <input type="radio" name="drill-mode" value="duration" />
+                  Duration
+                </label>
 
-            <div>
-              <span>(</span>
-
-              <input
-                type="number"
-                name="multiplicative-left-min"
-                value="2"
-                step="1"
-                required
-                aria-label="multiplicative first number minimum"
-              />
-
-              <span>to</span>
-
-              <input
-                type="number"
-                name="multiplicative-left-max"
-                value="12"
-                step="1"
-                required
-                aria-label="multiplicative first number maximum"
-              />
-
-              <span>) x (</span>
-
-              <input
-                type="number"
-                name="multiplicative-right-min"
-                value="2"
-                step="1"
-                required
-                aria-label="multiplicative second number minimum"
-              />
-
-              <span>to</span>
-
-              <input
-                type="number"
-                name="multiplicative-right-max"
-                value="100"
-                step="1"
-                required
-                aria-label="multiplicative second number maximum"
-              />
-
-              <span>)</span>
+                <select name="duration" aria-label="drill duration">
+                  <option value="30">30 seconds</option>
+                  <option value="60">60 seconds</option>
+                  <option value="120" selected>120 seconds</option>
+                  <option value="180">180 seconds</option>
+                  <option value="300">300 seconds</option>
+                </select>
+              </div>
             </div>
-            <p>Division reverses problems generated from these ranges.</p>
           </fieldset>
-        </fieldset>
 
-        <fieldset>
-          <legend>Drill Mode</legend>
+          <p id="configuration-error" role="alert"></p>
 
-          <label>
-            <input type="radio" name="drill-mode" value="count" checked />
-            Count
-          </label>
+          <div class="form-actions">
+            <button type="submit">Start</button>
 
-          <select name="count" aria-label="count">
-            <option value="10">10 questions</option>
-            <option value="25" selected>25 questions</option>
-            <option value="50">50 questions</option>
-            <option value="75">75 questions</option>
-            <option value="100">100 questions</option>
-          </select>
+            <button type="button" id="reset-settings-button">
+              Reset to Defaults
+            </button>
+          </div>
+        </form>
 
-          <label>
-            <input type="radio" name="drill-mode" value="duration" />
-            Duration
-          </label>
+        <section id="drill" class="drill" hidden>
+          <div class="drill-content">
+            <div class="drill-meta">
+              <p>
+                Score:
+                <span id="score">0</span>
+              </p>
 
-          <select name="duration" aria-label="duration">
-            <option value="30">30 seconds</option>
-            <option value="60">60 seconds</option>
-            <option value="120" selected>120 seconds</option>
-            <option value="180">180 seconds</option>
-            <option value="300">300 seconds</option>
-          </select>
-        </fieldset>
+              <p>
+                Time:
+                <span id="time">0.0</span>s
+              </p>
+            </div>
 
-        <p id="configuration-error" role="alert"></p>
+            <p id="drill-status" role="status" aria-live="polite"></p>
 
-        <button type="submit">Start</button>
+            <div id="problem-row" class="problem-row">
+              <p id="problem" aria-live="polite" aria-atomic="true"></p>
 
-        <button type="button" id="reset-settings-button">
-          Reset to Defaults
-        </button>
-      </form>
+              <label
+                id="answer-label"
+                class="visually-hidden"
+                for="answer-input"
+              >
+                Answer
+              </label>
 
-      <section id="drill" class="drill" hidden>
-        <p>
-          Score:
-          <span id="score">0</span>
-        </p>
+              <input
+                id="answer-input"
+                type="number"
+                step="1"
+                autocomplete="off"
+              />
+            </div>
 
-        <p>
-          Time:
-          <span id="time">0.0</span>s
-        </p>
+            <div id="drill-actions" hidden>
+              <button type="button" id="replay-button">Play Again</button>
 
-        <p id="drill-status"></p>
+              <button type="button" id="settings-button">
+                Change Settings
+              </button>
+            </div>
+          </div>
+        </section>
 
-        <p id="problem"></p>
+        <footer id="site-footer" class="site-footer">
+          <p>
+            built by rhlkntvd ·
+            <a
+              href="https://github.com/rhlkntvd"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              github
+            </a>
+          </p>
+        </footer>
+      </main>
+    </div>
 
-        <label id="answer-label" for="answer-input">Answer:</label>
-        <input id="answer-input" type="number" step="1" autocomplete="off" />
-
-        <div id="drill-actions" hidden>
-          <button type="button" id="replay-button">Play Again</button>
-
-          <button type="button" id="settings-button">Change Settings</button>
-        </div>
-      </section>
-    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
