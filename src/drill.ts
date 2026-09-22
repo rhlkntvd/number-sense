@@ -3,6 +3,7 @@ import type { Configuration } from "./configuration";
 import { generateProblem, type Problem } from "./problem";
 
 const TIMER_UPDATE_INTERVAL = 100;
+const MAX_DUPLICATE_RETRIES = 10;
 
 type DrillElements = {
   section: HTMLElement;
@@ -168,6 +169,33 @@ export function createDrill(elements: DrillElements) {
     timerId = window.setInterval(updateRemainingTime, TIMER_UPDATE_INTERVAL);
   };
 
+  const problemsAreEqual = (first: Problem, second: Problem): boolean => {
+    return (
+      first.operation === second.operation &&
+      first.left === second.left &&
+      first.right === second.right
+    );
+  };
+
+  const generateNextProblem = (
+    configuration: Configuration,
+    previousProblem: Problem,
+  ): Problem | null => {
+    let problem = generateProblem(configuration);
+    let retries = 0;
+
+    while (
+      problem &&
+      problemsAreEqual(problem, previousProblem) &&
+      retries < MAX_DUPLICATE_RETRIES
+    ) {
+      problem = generateProblem(configuration);
+      retries += 1;
+    }
+
+    return problem;
+  };
+
   const start = (configuration: Configuration): boolean => {
     const problem = generateProblem(configuration);
 
@@ -264,7 +292,10 @@ export function createDrill(elements: DrillElements) {
       return;
     }
 
-    const nextProblem = generateProblem(currentConfiguration);
+    const nextProblem = generateNextProblem(
+      currentConfiguration,
+      currentProblem,
+    );
 
     if (!nextProblem) {
       return;
