@@ -294,6 +294,42 @@ describe("generateProblem", () => {
       }
     });
 
+    test("generates mathematically correct subtraction problems within the configured ranges", () => {
+      const configuration: Configuration = {
+        operations: {
+          additive: {
+            addition: false,
+            subtraction: true,
+            left: {
+              min: -10,
+              max: 10,
+            },
+            right: {
+              min: -20,
+              max: 20,
+            },
+          },
+        },
+        drillMode: {
+          type: "count",
+          count: 25,
+        },
+      };
+
+      for (let i = 0; i < 100; i += 1) {
+        const problem = generateProblem(configuration);
+
+        expect(problem).not.toBeNull();
+
+        if (!problem) {
+          continue;
+        }
+
+        expect(problem.operation).toBe("subtraction");
+        expect(problem.left - problem.right).toBe(problem.answer);
+      }
+    });
+
     test("generates mathematically correct multiplication problems within the configured ranges", () => {
       const configuration = createCountConfiguration({
         multiplicative: {

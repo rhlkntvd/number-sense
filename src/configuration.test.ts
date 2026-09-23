@@ -184,4 +184,86 @@ describe("parseConfiguration", () => {
       }).toThrow("multiplicative ranges can produce unsafe integers");
     });
   });
+
+  test("accepts additive values at the magnitude limit", () => {
+    const formData = createValidFormData();
+
+    formData.set("additive-left-min", "-9999");
+    formData.set("additive-left-max", "9999");
+    formData.set("additive-right-min", "-9999");
+    formData.set("additive-right-max", "9999");
+
+    const configuration = parseConfiguration(formData);
+
+    expect(configuration.operations.additive?.left).toEqual({
+      min: -9999,
+      max: 9999,
+    });
+
+    expect(configuration.operations.additive?.right).toEqual({
+      min: -9999,
+      max: 9999,
+    });
+  });
+
+  test.each(["-10000", "10000"])(
+    "rejects additive values outside the magnitude limit: %s",
+    (value) => {
+      const formData = createValidFormData();
+
+      formData.set("additive-left-min", value);
+      formData.set("additive-left-max", value);
+
+      expect(() => {
+        parseConfiguration(formData);
+      }).toThrow("additive range values must be between -9999 and 9999.");
+    },
+  );
+
+  test("accepts multiplicative values at the magnitude limit", () => {
+    const formData = new FormData();
+
+    formData.set("multiplication", "on");
+
+    formData.set("multiplicative-left-min", "-999");
+    formData.set("multiplicative-left-max", "999");
+    formData.set("multiplicative-right-min", "-999");
+    formData.set("multiplicative-right-max", "999");
+
+    formData.set("drill-mode", "count");
+    formData.set("count", "25");
+
+    const configuration = parseConfiguration(formData);
+
+    expect(configuration.operations.multiplicative?.left).toEqual({
+      min: -999,
+      max: 999,
+    });
+
+    expect(configuration.operations.multiplicative?.right).toEqual({
+      min: -999,
+      max: 999,
+    });
+  });
+
+  test.each(["-1000", "1000"])(
+    "rejects multiplicative values outside the magnitude limit: %s",
+    (value) => {
+      const formData = new FormData();
+
+      formData.set("multiplication", "on");
+
+      formData.set("multiplicative-left-min", value);
+      formData.set("multiplicative-left-max", value);
+      formData.set("multiplicative-right-min", "2");
+      formData.set("multiplicative-right-max", "2");
+
+      formData.set("drill-mode", "count");
+      formData.set("count", "25");
+
+      expect(() => {
+        parseConfiguration(formData);
+      }).toThrow("multiplicative range values must be between -999 and 999.");
+    },
+  );
 });
