@@ -76,6 +76,22 @@ const multiplicativeRangeInputs =
     'input[name^="multiplicative-"]',
   );
 
+const rangeInputs = [...additiveRangeInputs, ...multiplicativeRangeInputs];
+
+rangeInputs.forEach((input) => {
+  input.addEventListener("invalid", () => {
+    input.setCustomValidity("");
+
+    if (input.validity.stepMismatch) {
+      input.setCustomValidity("Value must be an integer");
+    }
+  });
+
+  input.addEventListener("input", () => {
+    input.setCustomValidity("");
+  });
+});
+
 // drill DOM
 const drillSection = document.querySelector<HTMLElement>("#drill");
 

@@ -27,174 +27,185 @@
               <li>
                 configure the operations, ranges, and mode you want to practice
               </li>
+              <li>type each answer as quickly and accurately as you can</li>
             </ul>
           </div>
 
           <fieldset class="operations-fieldset">
             <legend>Operations</legend>
 
-            <div class="operation-group">
-              <div class="operation-options">
+            <div class="operation-family">
+              <div class="operation-row">
                 <label>
                   <input type="checkbox" name="addition" checked />
                   Addition
                 </label>
 
+                <div class="operation-setting">
+                  <span class="range-label">range:</span>
+
+                  <div class="range-row">
+                    <div class="range-part">
+                      <span>(</span>
+
+                      <input
+                        type="number"
+                        name="additive-left-min"
+                        value="2"
+                        min="-9999"
+                        max="9999"
+                        step="1"
+                        required
+                        aria-label="additive first number minimum"
+                      />
+
+                      <span>to</span>
+
+                      <input
+                        type="number"
+                        name="additive-left-max"
+                        value="100"
+                        min="-9999"
+                        max="9999"
+                        step="1"
+                        required
+                        aria-label="additive first number maximum"
+                      />
+
+                      <span>)</span>
+                    </div>
+
+                    <span class="range-operator">+</span>
+
+                    <div class="range-part">
+                      <span>(</span>
+
+                      <input
+                        type="number"
+                        name="additive-right-min"
+                        value="2"
+                        min="-9999"
+                        max="9999"
+                        step="1"
+                        required
+                        aria-label="additive second number minimum"
+                      />
+
+                      <span>to</span>
+
+                      <input
+                        type="number"
+                        name="additive-right-max"
+                        value="100"
+                        min="-9999"
+                        max="9999"
+                        step="1"
+                        required
+                        aria-label="additive second number maximum"
+                      />
+
+                      <span>)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="operation-row">
                 <label>
                   <input type="checkbox" name="subtraction" checked />
                   Subtraction
                 </label>
+
+                <p class="operation-note">addition problems in reverse.</p>
               </div>
-
-              <div class="range-row">
-                <div class="range-part">
-                  <span>(</span>
-
-                  <input
-                    type="number"
-                    name="additive-left-min"
-                    value="2"
-                    min="-9999"
-                    max="9999"
-                    step="1"
-                    required
-                    aria-label="additive first number minimum"
-                  />
-
-                  <span>to</span>
-
-                  <input
-                    type="number"
-                    name="additive-left-max"
-                    value="100"
-                    min="-9999"
-                    max="9999"
-                    step="1"
-                    required
-                    aria-label="additive first number maximum"
-                  />
-
-                  <span>)</span>
-                </div>
-
-                <span class="range-operator">+</span>
-
-                <div class="range-part">
-                  <span>(</span>
-
-                  <input
-                    type="number"
-                    name="additive-right-min"
-                    value="2"
-                    min="-9999"
-                    max="9999"
-                    step="1"
-                    required
-                    aria-label="additive second number minimum"
-                  />
-
-                  <span>to</span>
-
-                  <input
-                    type="number"
-                    name="additive-right-max"
-                    value="100"
-                    min="-9999"
-                    max="9999"
-                    step="1"
-                    required
-                    aria-label="additive second number maximum"
-                  />
-
-                  <span>)</span>
-                </div>
-              </div>
-
-              <p class="range-note">
-                subtraction reverses problems generated from these ranges
-              </p>
             </div>
 
-            <div class="operation-group">
-              <div class="operation-options">
+            <div class="operation-family">
+              <div class="operation-row">
                 <label>
                   <input type="checkbox" name="multiplication" checked />
                   Multiplication
                 </label>
 
+                <div class="operation-setting">
+                  <span class="range-label">range:</span>
+
+                  <div class="range-row">
+                    <div class="range-part">
+                      <span>(</span>
+
+                      <input
+                        type="number"
+                        name="multiplicative-left-min"
+                        value="2"
+                        min="-999"
+                        max="999"
+                        step="1"
+                        required
+                        aria-label="multiplicative first number minimum"
+                      />
+
+                      <span>to</span>
+
+                      <input
+                        type="number"
+                        name="multiplicative-left-max"
+                        value="12"
+                        min="-999"
+                        max="999"
+                        step="1"
+                        required
+                        aria-label="multiplicative first number maximum"
+                      />
+
+                      <span>)</span>
+                    </div>
+
+                    <span class="range-operator">×</span>
+
+                    <div class="range-part">
+                      <span>(</span>
+
+                      <input
+                        type="number"
+                        name="multiplicative-right-min"
+                        value="2"
+                        min="-999"
+                        max="999"
+                        step="1"
+                        required
+                        aria-label="multiplicative second number minimum"
+                      />
+
+                      <span>to</span>
+
+                      <input
+                        type="number"
+                        name="multiplicative-right-max"
+                        value="20"
+                        min="-999"
+                        max="999"
+                        step="1"
+                        required
+                        aria-label="multiplicative second number maximum"
+                      />
+
+                      <span>)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="operation-row">
                 <label>
                   <input type="checkbox" name="division" checked />
                   Division
                 </label>
+
+                <p class="operation-note">
+                  multiplication problems in reverse.
+                </p>
               </div>
-
-              <div class="range-row">
-                <div class="range-part">
-                  <span>(</span>
-
-                  <input
-                    type="number"
-                    name="multiplicative-left-min"
-                    value="2"
-                    min="-999"
-                    max="999"
-                    step="1"
-                    required
-                    aria-label="multiplicative first number minimum"
-                  />
-
-                  <span>to</span>
-
-                  <input
-                    type="number"
-                    name="multiplicative-left-max"
-                    value="12"
-                    min="-999"
-                    max="999"
-                    step="1"
-                    required
-                    aria-label="multiplicative first number maximum"
-                  />
-
-                  <span>)</span>
-                </div>
-
-                <span class="range-operator">×</span>
-
-                <div class="range-part">
-                  <span>(</span>
-
-                  <input
-                    type="number"
-                    name="multiplicative-right-min"
-                    value="2"
-                    min="-999"
-                    max="999"
-                    step="1"
-                    required
-                    aria-label="multiplicative second number minimum"
-                  />
-
-                  <span>to</span>
-
-                  <input
-                    type="number"
-                    name="multiplicative-right-max"
-                    value="100"
-                    min="-999"
-                    max="999"
-                    step="1"
-                    required
-                    aria-label="multiplicative second number maximum"
-                  />
-
-                  <span>)</span>
-                </div>
-              </div>
-
-              <p class="range-note">
-                division reverses problems generated from these ranges
-              </p>
             </div>
           </fieldset>
 
@@ -209,8 +220,8 @@
                 </label>
 
                 <select name="count" aria-label="problem count">
-                  <option value="10">10 problems</option>
-                  <option value="25" selected>25 problems</option>
+                  <option value="10" selected>10 problems</option>
+                  <option value="25">25 problems</option>
                   <option value="50">50 problems</option>
                   <option value="75">75 problems</option>
                   <option value="100">100 problems</option>
@@ -224,9 +235,9 @@
                 </label>
 
                 <select name="duration" aria-label="drill duration">
-                  <option value="30">30 seconds</option>
+                  <option value="30" selected>30 seconds</option>
                   <option value="60">60 seconds</option>
-                  <option value="120" selected>120 seconds</option>
+                  <option value="120">120 seconds</option>
                   <option value="180">180 seconds</option>
                   <option value="300">300 seconds</option>
                 </select>

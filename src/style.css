@@ -36,11 +36,11 @@ html {
 
 body {
   margin: 0;
+
   min-width: 320px;
   min-height: 100vh;
 
   font-family: Arial, Helvetica, sans-serif;
-
   line-height: 1.4;
 
   background: var(--background);
@@ -95,6 +95,7 @@ h1 {
   margin: 0.35rem 0 1.25rem;
 
   font-size: 1rem;
+
   color: var(--muted);
 }
 
@@ -176,51 +177,71 @@ legend {
   color: var(--text);
 }
 
-/* Operation groups */
+/* Operations */
 
-.operation-group {
+.operation-family {
   padding: 0.55rem 0.5rem 0.65rem;
 }
 
-.operation-group + .operation-group {
-  margin-top: 0.85rem;
-  padding-top: 1.35rem;
+.operation-family + .operation-family {
+  margin-top: 0.75rem;
+  padding-top: 1.25rem;
 
   border-top: 1px solid var(--border);
 }
 
-.operation-options {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.operation-row {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  align-items: center;
 
-  gap: 0.5rem 2.5rem;
+  gap: 1rem;
 
-  margin-bottom: 0.8rem;
-
-  font-size: 1rem;
-  font-weight: 500;
+  width: min(100%, 38rem);
+  margin-inline: auto;
 }
 
-.operation-options label {
+.operation-row + .operation-row {
+  margin-top: 0.7rem;
+}
+
+.operation-row > label {
   display: flex;
   align-items: center;
 
   gap: 0.45rem;
 
-  padding: 0;
+  font-size: 1rem;
+  font-weight: 500;
+
+  white-space: nowrap;
 }
 
-/* Ranges */
+.operation-setting {
+  display: flex;
+  align-items: center;
+
+  gap: 0.6rem;
+
+  min-width: 0;
+}
+
+.range-label {
+  flex: 0 0 auto;
+
+  font-size: 0.8rem;
+
+  color: var(--muted);
+}
 
 .range-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-
-  width: 100%;
+  justify-content: flex-start;
 
   gap: 0.4rem;
+
+  min-width: 0;
 }
 
 .range-part {
@@ -240,15 +261,11 @@ legend {
   font-weight: 500;
 }
 
-.range-note {
-  max-width: 30rem;
+.operation-note {
+  margin: 0;
 
-  margin: 0.55rem auto 0;
-
-  text-align: center;
-
-  font-size: 0.76rem;
-  font-weight: 400;
+  font-size: 0.78rem;
+  line-height: 1.4;
 
   color: var(--muted);
 }
@@ -692,45 +709,67 @@ select:focus-visible {
     padding-inline: 0.6rem;
   }
 
-  .operation-group {
-    padding: 0.2rem 0 0.45rem;
+  .operation-family {
+    padding: 0.25rem 0 0.4rem;
   }
 
-  .operation-group + .operation-group {
-    margin-top: 0.7rem;
-    padding-top: 1rem;
+  .operation-family + .operation-family {
+    margin-top: 0.6rem;
+    padding-top: 0.9rem;
   }
 
-  .operation-options {
-    gap: 0.45rem 1.25rem;
+  .operation-row {
+    grid-template-columns: 8rem minmax(0, 1fr);
 
-    margin-bottom: 0.65rem;
+    gap: 0.45rem;
+
+    width: 100%;
   }
 
-  .range-row {
+  .operation-row + .operation-row {
+    margin-top: 0.6rem;
+  }
+
+  .operation-row > label {
+    font-size: 0.93rem;
+  }
+
+  .operation-setting {
     flex-direction: column;
+    align-items: flex-start;
 
     gap: 0.25rem;
   }
 
+  .range-label {
+    font-size: 0.74rem;
+  }
+
+  .range-row {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 0.2rem;
+  }
+
   .range-part {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .range-operator {
+    align-self: center;
+
     margin: 0;
 
     line-height: 1;
   }
 
-  input[type="number"] {
-    width: 4rem;
+  .operation-note {
+    font-size: 0.74rem;
   }
 
-  .range-note {
-    max-width: 18rem;
-
-    margin-top: 0.45rem;
+  input[type="number"] {
+    width: 4rem;
   }
 
   .drill-mode-option {
