@@ -2,17 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <meta
       name="description"
       content="A configurable arithmetic drill game for practicing number sense."
     />
-
     <title>Number Sense</title>
   </head>
-
   <body>
     <div id="app">
       <main>
@@ -24,9 +20,7 @@
         <form id="configuration-form">
           <div class="configuration-intro">
             <ul>
-              <li>
-                configure the operations, ranges, and mode you want to practice
-              </li>
+              <li>configure your drill operations, ranges, and mode</li>
               <li>type each answer as quickly and accurately as you can</li>
             </ul>
           </div>
@@ -47,7 +41,6 @@
                   <div class="range-row">
                     <div class="range-part">
                       <span>(</span>
-
                       <input
                         type="number"
                         name="additive-left-min"
@@ -58,9 +51,7 @@
                         required
                         aria-label="additive first number minimum"
                       />
-
                       <span>to</span>
-
                       <input
                         type="number"
                         name="additive-left-max"
@@ -71,7 +62,6 @@
                         required
                         aria-label="additive first number maximum"
                       />
-
                       <span>)</span>
                     </div>
 
@@ -79,7 +69,6 @@
 
                     <div class="range-part">
                       <span>(</span>
-
                       <input
                         type="number"
                         name="additive-right-min"
@@ -90,9 +79,7 @@
                         required
                         aria-label="additive second number minimum"
                       />
-
                       <span>to</span>
-
                       <input
                         type="number"
                         name="additive-right-max"
@@ -103,7 +90,6 @@
                         required
                         aria-label="additive second number maximum"
                       />
-
                       <span>)</span>
                     </div>
                   </div>
@@ -115,7 +101,6 @@
                   <input type="checkbox" name="subtraction" checked />
                   Subtraction
                 </label>
-
                 <p class="operation-note">addition problems in reverse.</p>
               </div>
             </div>
@@ -133,7 +118,6 @@
                   <div class="range-row">
                     <div class="range-part">
                       <span>(</span>
-
                       <input
                         type="number"
                         name="multiplicative-left-min"
@@ -144,9 +128,7 @@
                         required
                         aria-label="multiplicative first number minimum"
                       />
-
                       <span>to</span>
-
                       <input
                         type="number"
                         name="multiplicative-left-max"
@@ -157,7 +139,6 @@
                         required
                         aria-label="multiplicative first number maximum"
                       />
-
                       <span>)</span>
                     </div>
 
@@ -165,7 +146,6 @@
 
                     <div class="range-part">
                       <span>(</span>
-
                       <input
                         type="number"
                         name="multiplicative-right-min"
@@ -176,9 +156,7 @@
                         required
                         aria-label="multiplicative second number minimum"
                       />
-
                       <span>to</span>
-
                       <input
                         type="number"
                         name="multiplicative-right-max"
@@ -189,7 +167,6 @@
                         required
                         aria-label="multiplicative second number maximum"
                       />
-
                       <span>)</span>
                     </div>
                   </div>
@@ -201,7 +178,6 @@
                   <input type="checkbox" name="division" checked />
                   Division
                 </label>
-
                 <p class="operation-note">
                   multiplication problems in reverse.
                 </p>
@@ -218,7 +194,6 @@
                   <input type="radio" name="drill-mode" value="count" checked />
                   Count
                 </label>
-
                 <select name="count" aria-label="problem count">
                   <option value="10" selected>10 problems</option>
                   <option value="25">25 problems</option>
@@ -233,7 +208,6 @@
                   <input type="radio" name="drill-mode" value="duration" />
                   Duration
                 </label>
-
                 <select name="duration" aria-label="drill duration">
                   <option value="30" selected>30 seconds</option>
                   <option value="60">60 seconds</option>
@@ -249,7 +223,6 @@
 
           <div class="form-actions">
             <button type="submit">Start</button>
-
             <button type="button" id="reset-settings-button">
               Reset to Defaults
             </button>
@@ -259,15 +232,8 @@
         <section id="drill" class="drill" hidden>
           <div class="drill-content">
             <div class="drill-meta">
-              <p>
-                Score:
-                <span id="score">0</span>
-              </p>
-
-              <p>
-                Time:
-                <span id="time">0.0</span>s
-              </p>
+              <p>Score: <span id="score">0</span></p>
+              <p>Time: <span id="time">0.0</span>s</p>
             </div>
 
             <p id="drill-status" role="status" aria-live="polite"></p>
@@ -293,7 +259,6 @@
 
             <div id="drill-actions" hidden>
               <button type="button" id="replay-button">Play Again</button>
-
               <button type="button" id="settings-button">
                 Change Settings
               </button>
@@ -308,9 +273,8 @@
               href="https://github.com/rhlkntvd"
               target="_blank"
               rel="noopener noreferrer"
+              >github</a
             >
-              github
-            </a>
           </p>
         </footer>
       </main>

@@ -1,5 +1,4 @@
 import type { Configuration } from "./configuration";
-
 import { generateProblem, type Problem } from "./problem";
 
 const TIMER_UPDATE_INTERVAL = 100;
@@ -27,29 +26,23 @@ export function createDrill(elements: DrillElements) {
   let drillEndTime: number | null = null;
   let timerId: number | null = null;
 
-  const formatTime = (milliseconds: number, precision: number): string => {
-    return (milliseconds / 1000).toFixed(precision);
-  };
+  const formatTime = (milliseconds: number, precision: number): string =>
+    (milliseconds / 1000).toFixed(precision);
 
-  const formatProblemCount = (count: number): string => {
-    return `${count} ${count === 1 ? "problem" : "problems"}`;
-  };
+  const formatProblemCount = (count: number): string =>
+    `${count} ${count === 1 ? "problem" : "problems"}`;
 
-  const formatRightOperand = (value: number): string => {
-    return value < 0 ? `(${value})` : String(value);
-  };
+  const formatRightOperand = (value: number): string =>
+    value < 0 ? `(${value})` : String(value);
 
   const getOperationSymbol = (operation: Problem["operation"]): string => {
     switch (operation) {
       case "addition":
         return "+";
-
       case "subtraction":
         return "-";
-
       case "multiplication":
         return "×";
-
       case "division":
         return "÷";
     }
@@ -60,16 +53,14 @@ export function createDrill(elements: DrillElements) {
       return;
     }
 
-    if (currentConfiguration.drillMode.type === "count") {
-      elements.scoreDisplay.textContent = `${score}/${currentConfiguration.drillMode.count}`;
-    } else {
-      elements.scoreDisplay.textContent = String(score);
-    }
+    elements.scoreDisplay.textContent =
+      currentConfiguration.drillMode.type === "count"
+        ? `${score}/${currentConfiguration.drillMode.count}`
+        : String(score);
   };
 
   const displayProblem = (problem: Problem) => {
     const symbol = getOperationSymbol(problem.operation);
-
     const right = formatRightOperand(problem.right);
 
     elements.problemDisplay.textContent = `${problem.left} ${symbol} ${right} =`;
@@ -82,11 +73,22 @@ export function createDrill(elements: DrillElements) {
     }
   };
 
+  const updateAnswerSize = () => {
+    const length = elements.answerInput.value.length;
+
+    elements.answerInput.classList.toggle(
+      "answer-long",
+      length >= 5 && length < 7,
+    );
+    elements.answerInput.classList.toggle("answer-very-long", length >= 7);
+  };
+
   const resetAnswerControls = (enabled: boolean) => {
     elements.answerLabel.hidden = !enabled;
     elements.answerInput.hidden = !enabled;
     elements.answerInput.disabled = !enabled;
     elements.answerInput.value = "";
+    updateAnswerSize();
   };
 
   const finishDrill = () => {
@@ -95,29 +97,22 @@ export function createDrill(elements: DrillElements) {
     }
 
     stopTimer();
-
     resetAnswerControls(false);
 
     elements.problemDisplay.textContent = "";
-
     elements.actions.hidden = false;
-
     elements.replayButton.focus();
-
     elements.problemRow.hidden = true;
 
     if (currentConfiguration.drillMode.type === "count") {
       const elapsed =
         drillStartTime === null ? 0 : performance.now() - drillStartTime;
-
       const formattedTime = formatTime(elapsed, 2);
 
       elements.timeDisplay.textContent = formattedTime;
-
       elements.statusDisplay.textContent = `${formatProblemCount(score)} completed in ${formattedTime} seconds`;
     } else {
       elements.timeDisplay.textContent = "0.0";
-
       elements.statusDisplay.textContent = `${formatProblemCount(score)} completed in ${currentConfiguration.drillMode.duration} seconds`;
     }
 
@@ -132,7 +127,6 @@ export function createDrill(elements: DrillElements) {
     }
 
     const elapsed = performance.now() - drillStartTime;
-
     elements.timeDisplay.textContent = formatTime(elapsed, 1);
   };
 
@@ -141,7 +135,6 @@ export function createDrill(elements: DrillElements) {
     drillEndTime = null;
 
     updateElapsedTime();
-
     timerId = window.setInterval(updateElapsedTime, TIMER_UPDATE_INTERVAL);
   };
 
@@ -161,21 +154,16 @@ export function createDrill(elements: DrillElements) {
 
   const startDurationTimer = (durationSeconds: number) => {
     drillStartTime = performance.now();
-
     drillEndTime = drillStartTime + durationSeconds * 1000;
 
     updateRemainingTime();
-
     timerId = window.setInterval(updateRemainingTime, TIMER_UPDATE_INTERVAL);
   };
 
-  const problemsAreEqual = (first: Problem, second: Problem): boolean => {
-    return (
-      first.operation === second.operation &&
-      first.left === second.left &&
-      first.right === second.right
-    );
-  };
+  const problemsAreEqual = (first: Problem, second: Problem): boolean =>
+    first.operation === second.operation &&
+    first.left === second.left &&
+    first.right === second.right;
 
   const generateNextProblem = (
     configuration: Configuration,
@@ -211,27 +199,22 @@ export function createDrill(elements: DrillElements) {
 
     updateScoreDisplay();
     elements.statusDisplay.textContent = "";
-
     resetAnswerControls(true);
 
     elements.section.hidden = false;
-
     elements.actions.hidden = true;
-
     elements.problemRow.hidden = false;
 
     displayProblem(problem);
 
     if (configuration.drillMode.type === "count") {
       elements.timeDisplay.textContent = "0.0";
-
       startCountTimer();
     } else {
       elements.timeDisplay.textContent = formatTime(
         configuration.drillMode.duration * 1000,
         1,
       );
-
       startDurationTimer(configuration.drillMode.duration);
     }
 
@@ -241,16 +224,16 @@ export function createDrill(elements: DrillElements) {
   };
 
   const replay = () => {
-    if (!currentConfiguration) {
-      return;
+    if (currentConfiguration) {
+      start(currentConfiguration);
     }
-
-    start(currentConfiguration);
   };
 
   elements.replayButton.addEventListener("click", replay);
 
   elements.answerInput.addEventListener("input", () => {
+    updateAnswerSize();
+
     if (!currentProblem || !currentConfiguration) {
       return;
     }
@@ -272,16 +255,11 @@ export function createDrill(elements: DrillElements) {
 
     const answer = Number(value);
 
-    if (!Number.isSafeInteger(answer)) {
-      return;
-    }
-
-    if (answer !== currentProblem.answer) {
+    if (!Number.isSafeInteger(answer) || answer !== currentProblem.answer) {
       return;
     }
 
     score += 1;
-
     updateScoreDisplay();
 
     if (
@@ -302,13 +280,10 @@ export function createDrill(elements: DrillElements) {
     }
 
     currentProblem = nextProblem;
-
     elements.answerInput.value = "";
-
+    updateAnswerSize();
     displayProblem(nextProblem);
   });
 
-  return {
-    start,
-  };
+  return { start };
 }

@@ -27,10 +27,7 @@ export type OperationConfig = {
 
 export type DrillMode =
   | { type: "count"; count: number }
-  | {
-      type: "duration";
-      duration: number;
-    };
+  | { type: "duration"; duration: number };
 
 export type Configuration = {
   operations: OperationConfig;
@@ -71,10 +68,7 @@ function getRange(formData: FormData, minName: string, maxName: string): Range {
     throw new Error("range minimum cannot be greater than maximum");
   }
 
-  return {
-    min,
-    max,
-  };
+  return { min, max };
 }
 
 function validateAdditiveResults(left: Range, right: Range): void {
@@ -99,10 +93,14 @@ function validateMultiplicativeResults(left: Range, right: Range): void {
   }
 }
 
-function validateRangeMagnitude(range: Range, maximum: number, label: string) {
+function validateRangeMagnitude(
+  range: Range,
+  maximum: number,
+  label: string,
+): void {
   if (Math.abs(range.min) > maximum || Math.abs(range.max) > maximum) {
     throw new Error(
-      `${label} values must be between ${-maximum} and ${maximum}.`,
+      `${label} values must be between ${-maximum} and ${maximum}`,
     );
   }
 }
@@ -121,7 +119,6 @@ export function parseConfiguration(formData: FormData): Configuration {
 
   if (addition || subtraction) {
     const left = getRange(formData, "additive-left-min", "additive-left-max");
-
     const right = getRange(
       formData,
       "additive-right-min",
@@ -146,7 +143,6 @@ export function parseConfiguration(formData: FormData): Configuration {
       "multiplicative-left-min",
       "multiplicative-left-max",
     );
-
     const right = getRange(
       formData,
       "multiplicative-right-min",
@@ -159,7 +155,6 @@ export function parseConfiguration(formData: FormData): Configuration {
       MAX_MULTIPLICATIVE_FACTOR,
       "multiplicative range",
     );
-
     validateRangeMagnitude(
       right,
       MAX_MULTIPLICATIVE_FACTOR,
