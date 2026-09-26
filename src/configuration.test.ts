@@ -216,7 +216,7 @@ describe("parseConfiguration", () => {
 
       expect(() => {
         parseConfiguration(formData);
-      }).toThrow("additive range values must be between -9999 and 9999.");
+      }).toThrow("additive range values must be between -9999 and 9999");
     },
   );
 
@@ -263,7 +263,7 @@ describe("parseConfiguration", () => {
 
       expect(() => {
         parseConfiguration(formData);
-      }).toThrow("multiplicative range values must be between -999 and 999.");
+      }).toThrow("multiplicative range values must be between -999 and 999");
     },
   );
 });
