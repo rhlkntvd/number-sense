@@ -1,6 +1,6 @@
 # Number Sense
 
-A configurable mental arithmetic drill built with TypeScript
+A configurable mental arithmetic drill built with TypeScript // [URL](https://play-number-sense.vercel.app)
 
 ## Features
 
